@@ -11,3 +11,12 @@ services:
     volumes:
     - ./props/server.properties:/kafka/config/kraft/server.properties
     - ./data:/tmp/kafka-logs
+
+# Start Kafka Container
+# docker compose up
+
+# To get in kafka container
+# docker exec -it kafka bash
+
+# Stop Kafka Container
+# docker compose down
