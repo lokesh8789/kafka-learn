@@ -10,26 +10,18 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-public class KafkaConsume {
-    public static void main(String[] args) {
+public class ConsumerGroup {
+    public static void start(String id) {
         Map<String, Object> config = Map.of(
                 ConsumerConfig.GROUP_ID_CONFIG, "demo",
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092",
                 ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class,
                 ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class,
                 ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest",
-                ConsumerConfig.GROUP_INSTANCE_ID_CONFIG, "1"
+                ConsumerConfig.GROUP_INSTANCE_ID_CONFIG, id
         );
 
         ReceiverOptions<Object, Object> receiverOptions = ReceiverOptions.create(config)
-                .addAssignListener(receiverPartitions -> {
-//                    receiverPartitions.forEach(r -> log.info("{}", r.position()));
-                    // Reset the offset to some +x or -x
-//                    receiverPartitions.stream()
-//                            .filter(r -> r.topicPartition().partition() == 2)
-//                            .findFirst()
-//                            .ifPresent(r -> r.seek(2));
-                })
                 .subscription(List.of("hello-world"));
 
         KafkaReceiver.create(receiverOptions)
@@ -38,5 +30,24 @@ public class KafkaConsume {
                 .doOnNext(r -> r.headers().forEach(header -> log.info("Header Key: {}, Value: {}", header.key(), new String(header.value()))))
                 .doOnNext(r -> r.receiverOffset().acknowledge())
                 .subscribe();
+    }
+
+
+    private static class Consumer1 {
+        public static void main(String[] args) {
+            start("1");
+        }
+    }
+
+    private static class Consumer2 {
+        public static void main(String[] args) {
+            start("2");
+        }
+    }
+
+    private static class Consumer3 {
+        public static void main(String[] args) {
+            start("3");
+        }
     }
 }

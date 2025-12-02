@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-public class KafkaConsume {
+public class MultiTopicConsumer {
     public static void main(String[] args) {
         Map<String, Object> config = Map.of(
                 ConsumerConfig.GROUP_ID_CONFIG, "demo",
@@ -18,24 +18,15 @@ public class KafkaConsume {
                 ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class,
                 ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class,
                 ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest",
-                ConsumerConfig.GROUP_INSTANCE_ID_CONFIG, "1"
+                ConsumerConfig.GROUP_INSTANCE_ID_CONFIG, "2"
         );
 
         ReceiverOptions<Object, Object> receiverOptions = ReceiverOptions.create(config)
-                .addAssignListener(receiverPartitions -> {
-//                    receiverPartitions.forEach(r -> log.info("{}", r.position()));
-                    // Reset the offset to some +x or -x
-//                    receiverPartitions.stream()
-//                            .filter(r -> r.topicPartition().partition() == 2)
-//                            .findFirst()
-//                            .ifPresent(r -> r.seek(2));
-                })
-                .subscription(List.of("hello-world"));
+                .subscription(List.of("hello-world", "inventory"));
 
         KafkaReceiver.create(receiverOptions)
                 .receive()
                 .doOnNext(r -> log.info("Topic: {}, Key: {}, value: {}", r.topic(), r.key(), r.value()))
-                .doOnNext(r -> r.headers().forEach(header -> log.info("Header Key: {}, Value: {}", header.key(), new String(header.value()))))
                 .doOnNext(r -> r.receiverOffset().acknowledge())
                 .subscribe();
     }
