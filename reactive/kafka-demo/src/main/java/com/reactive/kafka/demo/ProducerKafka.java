@@ -24,7 +24,7 @@ public class ProducerKafka {
         SenderOptions<String, String> senderOptions = SenderOptions.create(config);
 
         Flux<SenderRecord<String, String, String>> flux = Flux.interval(Duration.ofMillis(50))
-                .take(10_000)
+                .take(100)
                 .map(i -> new ProducerRecord<>("hello-world", i.toString(), "h-" + i))
                 .map(r -> SenderRecord.create(r, r.key()));
 
