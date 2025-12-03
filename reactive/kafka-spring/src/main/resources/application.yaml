@@ -2,10 +2,16 @@ spring:
   application:
     name: kafka-spring
   kafka:
+    bootstrap-servers:
+      - localhost:9092
     consumer:
-      bootstrap-servers:
-        - localhost:9092
       group-id: kafka-spring
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        "group.instance.id": "1"
+        "spring.json.trusted.packages": "com.reactive.kafka.spring"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
