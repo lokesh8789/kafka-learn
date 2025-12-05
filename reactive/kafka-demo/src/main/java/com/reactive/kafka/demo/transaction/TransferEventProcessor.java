@@ -49,8 +49,6 @@ public class TransferEventProcessor {
         ProducerRecord<String, String> pr2 = new ProducerRecord<>("transaction-events", event.key(), "%s-%s".formatted(event.from(), event.amount()));
         SenderRecord<String, String, String> sr1 = SenderRecord.create(pr1, pr1.key());
         SenderRecord<String, String, String> sr2 = SenderRecord.create(pr2, pr2.key());
-        return Flux.just(sr1)
-                .concatWith(Mono.delay(Duration.ofSeconds(1)).then(Mono.error(new RuntimeException("Oops"))))
-                .concatWith(Mono.just(sr2));
+        return Flux.just(sr1, sr2);
     }
 }
