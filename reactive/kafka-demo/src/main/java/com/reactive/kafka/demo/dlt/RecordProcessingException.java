@@ -1,6 +1,5 @@
-package com.reactive.kafka.demo;
+package com.reactive.kafka.demo.dlt;
 
-import lombok.Getter;
 import reactor.kafka.receiver.ReceiverRecord;
 
 

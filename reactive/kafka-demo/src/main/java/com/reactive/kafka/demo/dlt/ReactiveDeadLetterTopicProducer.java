@@ -1,4 +1,4 @@
-package com.reactive.kafka.demo;
+package com.reactive.kafka.demo.dlt;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.ProducerRecord;
